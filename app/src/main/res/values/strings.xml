@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">658</string>
+    <string name="app">APP aCHAT</string>
+    <string name="login_tag_1">User:\\> Hello...</string>
+    <string name="login_tag_2">   ...Hello?</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="login_LOGIN">LOGIN</string>
+    <string name="login_ACK">StudentProject COM659</string>
+
+    <string name="signup_SIGNUP">SIGNUP</string>
+    <string name="signup_admin">Administrator</string>
+    <string name="signup_fullname">Full Name</string>
+    <string name="signup_confirmpassword">Confirm Password</string>
+    <string name="signup_REGISTER">REGISTER</string>
+
+</resources>
