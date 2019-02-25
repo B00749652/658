@@ -6,17 +6,16 @@ import android.database.Cursor;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+
 public class AppCrypto {
-    private Context context;
+    public static Context context;
 
-
-    public AppCrypto(Context context){
-        this.context = context;
+    AppCrypto(Context context1){
+        context =context1;
     }
 
 
-
-    public int onSecureLoginClick(String username, String password){
+    public int onSecureLoginClick(String username, String password) throws NoSuchAlgorithmException{
         // Security Management Method for
         // Checking Database Stored Credentials and deciding
         // which use-case story should be actuated
@@ -43,36 +42,31 @@ public class AppCrypto {
 
 
 
-    private boolean[] checkCredentials(String username, String password){
+    private boolean[] checkCredentials(String username, String password) throws NoSuchAlgorithmException{
         // Consult DataBase for
         // UserName and Password and
         // AccessLevel Credentials
         boolean[] checkResult = new boolean[2];
-
-        try {
-            DAO secTable = DAO.getInstance(this.context);
+            DAO dao = new DAO(context, "ContentDeliverySystem.db",null,1);
             String loginAttempt = createCrypto(password);
-            secTable.getReadableDatabase();
-            Cursor cursor = secTable.getCreds(username);
-            cursor.moveToFirst();
+            Cursor cursor = dao.getCreds(username);
             if(cursor != null) {
-                while (cursor.isBeforeFirst()) {
-                    if (cursor.getString(cursor.getColumnIndex("id")).equals(username)) {
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast()) {
+                    if (cursor.getString(cursor.getColumnIndex("userID")).equals(username)) {
                         checkResult[1] = false;
-                        if (Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("Admin")))) {
+                        if (Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("admin")))) {
                             checkResult[1] = true;
                         }
-                        if (cursor.getString(cursor.getColumnIndex("Passphrase")).equals(loginAttempt)) {
+                        if (cursor.getString(cursor.getColumnIndex("passphrase")).equals(loginAttempt)) {
                             checkResult[0] = true;
                             return checkResult;
                         } else {
                             break;
                         }
                     }
+                    cursor.move(1);
                 }
-            }
-            }catch(NoSuchAlgorithmException ex){
-                ex.printStackTrace();
             }
         return checkResult;
     }//checkCredentials Method

@@ -10,4 +10,12 @@
     <color name="color_end_login">#0D2232</color>
     <color name="color_login_btn">#006996</color>
 
+    <color name="cog_attribute1">#AD5</color>
+    <color name="cog_attribute2">#F5E595</color>
+    <color name="cog_attribute3">#F09B59</color>
+    <color name="cog_attribute4">#F6AAF1</color>
+
+    <color name="divider">#727786</color>
+
+
 </resources>

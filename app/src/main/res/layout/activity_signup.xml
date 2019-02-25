@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/login_gradient"
-    tools:context=".SignupActivity">
+    tools:context=".auxiliary.SignupActivity">
 
 
 
@@ -81,6 +81,7 @@
                 />
             <EditText
                 android:id="@+id/EditFullname"
+                android:focusable="true"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:elevation="2dp"
@@ -103,6 +104,7 @@
             <EditText
                 android:id="@+id/EditUsername"
                 android:layout_width="match_parent"
+                android:focusable="true"
                 android:layout_height="36dp"
                 android:elevation="2dp"
                 android:inputType="text"
@@ -140,6 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:elevation="2dp"
+                android:focusable="true"
                 android:inputType="textPassword"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
@@ -162,19 +165,4 @@
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
-    <TextView
-        android:id="@+id/LoginLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app"
-        android:fontFamily="casual"
-        android:textStyle="bold"
-        android:textScaleX="1.5"
-        android:textColor="@color/colorPrimary"
-        android:textSize="24sp"
-        android:layout_gravity="center_horizontal"
-        android:paddingBottom="25dp"
-        android:paddingTop="60dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"/>
 </LinearLayout>

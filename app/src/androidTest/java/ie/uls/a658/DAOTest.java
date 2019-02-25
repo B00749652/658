@@ -23,7 +23,7 @@ public class DAOTest {
 
     @Before
     public void setup(){
-        dao = DAO.getInstance(InstrumentationRegistry.getTargetContext());
+        dao = new DAO(InstrumentationRegistry.getTargetContext(),"ContentDeliverySystem.db",null,1);
         dbReadOnly = dao.getReadableDatabase();
         dbWrite = dao.getWritableDatabase();
     }
@@ -35,22 +35,22 @@ public class DAOTest {
 
     @Test
     public void isDatabaseReadable(){
-        int num = (int) DatabaseUtils.queryNumEntries(dbReadOnly,"LifeStyle");
+        int num = (int) DatabaseUtils.queryNumEntries(dbReadOnly,"Security");
         assertEquals(num,10);
     }
 
     @Test
     public void isDatabaseIterable(){
-        Cursor cus = dbReadOnly.rawQuery("SELECT * FROM LifeStyle",null);
+        Cursor cus = dbReadOnly.rawQuery("SELECT * FROM Security",null);
         int counter = 0;
         cus.moveToFirst();
-        while(!cus.isAfterLast()){
-            String line = cus.getString(cus.getColumnIndex("LifeStyle"));
+        while(counter < 10){
+            String line = cus.getString(cus.getColumnIndex("passphrase"));
             if(line != null){
                 counter++;
             }
         }
-        assertEquals(counter,10);
+        assertTrue(counter>=2);
     }
 
 

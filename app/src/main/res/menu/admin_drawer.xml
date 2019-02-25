@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="single">
+
+    <item android:title="Analytics">
+    <menu>
+        <group android:checkableBehavior="single">
+
+    <item android:title="@string/item_experience"
+        android:id="@+id/menu_1"
+        android:icon="@drawable/login_settings"/>
+        </group>
+    </menu>
+    </item>
+
+
+
+<item android:title="General">
+    <menu>
+        <group android:checkableBehavior="single">
+    <item android:title="@string/item_newuser"
+                android:id="@+id/menu_2"
+                android:icon="@drawable/login_settings"/>
+    <item android:title="@string/item_password"
+                android:id="@+id/menu_3"
+                android:icon="@drawable/login_settings"/>
+    <item android:title="@string/item_logout"
+        android:id="@+id/menu_4"
+        android:icon="@drawable/login_settings"/>
+        </group>
+    </menu>
+</item>
+
+
+</group>
+
+</menu>

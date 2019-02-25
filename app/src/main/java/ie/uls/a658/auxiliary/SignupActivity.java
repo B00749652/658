@@ -1,31 +1,33 @@
-package ie.uls.a658;
+package ie.uls.a658.auxiliary;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
-import ie.uls.a658.auxiliary.DAO;
+import ie.uls.a658.R;
+
 
 public class SignupActivity extends AppCompatActivity {
-    private EditText mEditText;
-    private String fullname, username, password;
-    private String photoname = this.username + ".png";
-    private Uri photoUri = Uri.fromFile(new File(photoname));
+    private static EditText mEditText;
+    private static String fullname, username, password;
     private boolean isAdmin = false;
     static final int PHOTO = 1;
+    private static File image;
+    private static DAO dao;
 
 
 
@@ -36,12 +38,14 @@ public class SignupActivity extends AppCompatActivity {
         // Processed and Image Button Background Updated
         //
         FileOutputStream out;
-        if(requestCode == PHOTO){
+        if((requestCode == PHOTO) && (resultCode == RESULT_OK)){
+            Bitmap picture = (Bitmap) data.getExtras().get("data");
             ImageButton imButton = findViewById(R.id.Userimage);
-            imButton.setImageBitmap((Bitmap) data.getExtras().get("data"));
+            imButton.setImageBitmap(picture);
+            if(username == null){username = "example";}
             try{
-                out = openFileOutput(photoname, Context.MODE_PRIVATE);
-                out.write(data.getExtras().get("data").toString().getBytes());
+                File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                image = File.createTempFile(username,".png",file);
             }
             catch(NullPointerException ex){ex.printStackTrace();}
             catch(IOException ex){ex.printStackTrace();}
@@ -58,11 +62,16 @@ public class SignupActivity extends AppCompatActivity {
         // Check Access Route for Admin Privileges
         // Add Additional Functionality to Activity
         setContentView(R.layout.activity_signup);
-        ViewStub isAdminCheck = findViewById(R.id.signupAdmin);
-        if(!isAdmin) {
-            isAdminCheck.setVisibility(View.INVISIBLE);
-        }else {
-            isAdminCheck.setVisibility(View.VISIBLE);
+
+        try {
+            if ((getIntent() != null) && (getIntent().hasExtra(Intent.EXTRA_TEXT))) {
+                Bundle extras = getIntent().getExtras();
+                this.isAdmin = Boolean.parseBoolean(extras.getString(Intent.EXTRA_TEXT));
+            }
+        }catch(NullPointerException ex){ex.printStackTrace();}
+        if(isAdmin) {
+            ViewStub isAdminCheck = findViewById(R.id.signupAdmin);
+            View inflatedView = isAdminCheck.inflate();
         }
 
     }//OnCreate Method
@@ -74,21 +83,23 @@ public class SignupActivity extends AppCompatActivity {
         // Connect with Database
         // Insert new User with all attributes
         mEditText = findViewById(R.id.EditFullname);
-        this.fullname = mEditText.getText().toString();
+        fullname = mEditText.getText().toString();
         mEditText = findViewById(R.id.EditUsername);
-        this.username = mEditText.getText().toString();
+        username = mEditText.getText().toString();
         mEditText = findViewById(R.id.EditPassword);
-        this.password = mEditText.getText().toString();
+        password = mEditText.getText().toString();
+        CheckBox checkBox = findViewById(R.id.isAdminchk);
+        this.isAdmin = (checkBox.isChecked());
 
-        DAO dataLib = DAO.getInstance(this.getApplicationContext());
-        File file = new File(username+".png");
-        if(file.isFile()) {
-            dataLib.insertNewUser(fullname, username, password, isAdmin, file.getPath());
+        dao = new DAO(this.getBaseContext(),"ContentDeliverySystem.db",null,1);
+
+        if(image != null) {
+            dao.insertNewUser(fullname, username, password, isAdmin, image.getAbsolutePath());
         }else{
-            dataLib.insertNewUser(fullname, username, password, isAdmin, null);
+            dao.insertNewUser(fullname, username, password, isAdmin, null);
         }
-        finish();
-
+        Intent returnHome = new Intent(this,LoginActivity.class);
+        startActivity(returnHome);
     }//OnRegisterClick Method
 
 
@@ -97,8 +108,9 @@ public class SignupActivity extends AppCompatActivity {
         // Start Android Camera
         // Watch for a results and return
         // a Photo to Sign up Activity
+        mEditText = findViewById(R.id.EditUsername);
+        username = mEditText.getText().toString();
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
         startActivityForResult(intent,PHOTO);
 
     }//OnPhotoClick Method
