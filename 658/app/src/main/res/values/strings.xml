@@ -1,0 +1,32 @@
+<resources>
+    <string name="app">APP aCHAT</string>
+    <string name="prefs">Preferences</string>
+    <string name="login_tag_1">User:\\> Hello...</string>
+    <string name="login_tag_2">   ...Hello?</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="login_LOGIN">LOGIN</string>
+    <string name="login_ACK">StudentProject COM659</string>
+
+    <string name="signup_SIGNUP">SIGNUP</string>
+    <string name="signup_admin">Administrator</string>
+    <string name="signup_fullname">Full Name</string>
+    <string name="signup_confirmpassword">Confirm Password</string>
+    <string name="signup_REGISTER">REGISTER</string>
+
+    <string name="cog_PAD1">Lovely Me</string>
+    <string name="cog_PAD2">Wonderful Me</string>
+    <string name="cog_PAD3">Amusing Me</string>
+    <string name="cog_PAD4">Never in a Million Years Me</string>
+
+    <string name="cog_Start">Start</string>
+
+    <string name="admin">Dashboard</string>
+    <string name="administrator">ADMINISTRATOR</string>
+    <string name="item_newuser">Register New Users</string>
+    <string name="item_password">Change Password</string>
+    <string name="item_experience">User Experience Metrics</string>
+    <string name="item_logout">Local Logout</string>
+
+
+</resources>

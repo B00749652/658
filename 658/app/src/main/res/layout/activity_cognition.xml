@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_anchorGravity="fill_horizontal"
+    android:layout_width="match_parent">
+
+<LinearLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_gradient"
+    android:orientation="vertical"
+    tools:context=".preferences.MetaCogActivity">
+
+    <RelativeLayout
+        android:id="@+id/rel1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/attribute1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text=""
+            android:background="@drawable/roundrectangle"
+            android:backgroundTint="@color/cog_attribute1"
+            android:backgroundTintMode="src_in"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/attribute2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text=""
+            android:layout_toEndOf="@id/attribute1"
+            android:background="@drawable/roundrectangle"
+            android:backgroundTint="@color/cog_attribute2"
+            android:backgroundTintMode="src_in"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/attribute3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_toEndOf="@id/attribute2"
+            android:background="@drawable/roundrectangle"
+            android:backgroundTint="@color/cog_attribute3"
+            android:backgroundTintMode="src_in"
+            android:text=""
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/attribute4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_toEndOf="@id/attribute3"
+            android:background="@drawable/roundrectangle"
+            android:backgroundTint="@color/cog_attribute4"
+            android:backgroundTintMode="src_in"
+            android:text=""
+            android:textSize="14sp" />
+    </RelativeLayout>
+    <Space android:layout_height="4dp"
+        android:layout_width="match_parent"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="fill_horizontal">
+
+        <TextView
+            android:id="@+id/attribute5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/roundrectangle"
+            android:backgroundTint="@color/cog_attribute4"
+            android:backgroundTintMode="src_in"
+            android:text=""
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/attribute6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_toEndOf="@id/attribute5"
+            android:background="@drawable/roundrectangle"
+            android:backgroundTint="@color/cog_attribute3"
+            android:backgroundTintMode="src_in"
+            android:text=""
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/attribute7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_toEndOf="@id/attribute6"
+            android:background="@drawable/roundrectangle"
+            android:backgroundTint="@color/cog_attribute2"
+            android:backgroundTintMode="src_in"
+            android:text=""
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/attribute8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/attribute7"
+            android:background="@drawable/roundrectangle"
+            android:backgroundTint="@color/cog_attribute1"
+            android:backgroundTintMode="src_in"
+            android:text=""
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <TableLayout
+        android:id="@+id/cards"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="800dp"
+        android:layout_margin="5dp"
+
+        android:shrinkColumns="*"
+        android:layout_height="wrap_content">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="135dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+<RelativeLayout
+    android:layout_margin="5dp"
+    android:gravity="center">
+            <android.support.v7.widget.CardView
+                android:id="@+id/card1"
+                android:layout_width="350dp"
+                android:layout_height="100dp">
+<RelativeLayout
+    android:id="@+id/card1txt"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+                <TextView
+                    app:layout_constraintBaseline_toBaselineOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_width="350dp"
+                    android:textScaleX="1.2"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="top"
+                    android:text="@string/cog_PAD1" />
+</RelativeLayout>
+            </android.support.v7.widget.CardView>
+</RelativeLayout>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+<RelativeLayout
+    android:layout_span="1"
+    android:layout_marginTop="5dp"
+    android:gravity="center">
+            <android.support.v7.widget.CardView
+                android:id="@+id/card2"
+                android:layout_width="170dp"
+                android:layout_height="135dp"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center|center_horizontal"
+                android:layout_margin="5dp">
+                <RelativeLayout
+                    android:id="@+id/card2txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="0dp"
+                    android:textScaleX="1.2"
+                    android:background="@drawable/card2grad"
+                    android:text="@string/cog_PAD2" />
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card3"
+                    android:layout_width="170dp"
+                    android:layout_height="135dp"
+                    android:layout_margin="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@id/card2">
+                    <RelativeLayout
+                        android:id="@+id/card3txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="start"
+                        android:textScaleX="1.2"
+                        android:background="@drawable/card3grad"
+                        android:text="@string/cog_PAD3" />
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+            </RelativeLayout>
+        </TableRow>
+
+<TableRow
+    android:layout_width="match_parent"
+    android:layout_height="135dp"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card4"
+            android:layout_width="350dp"
+            android:layout_height="100dp"
+            android:layout_margin="5dp"
+            app:layout_constraintBaseline_toBaselineOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <RelativeLayout
+                android:id="@+id/card4txt"
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:textScaleX="1.2"
+                android:textAlignment="textStart"
+                android:background="@drawable/card4grad"
+                android:text="@string/cog_PAD4" />
+
+    </RelativeLayout>
+        </android.support.v7.widget.CardView>
+</TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="135dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linstub"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="end"
+        android:orientation = "horizontal">
+
+    <Button
+        android:id="@+id/isGo"
+        android:text="GO"
+        android:textSize="14sp"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="10dp"
+        android:onClick="onGoClick"
+        />
+
+    </LinearLayout>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
+</android.support.constraint.ConstraintLayout>

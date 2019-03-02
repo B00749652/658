@@ -3,9 +3,10 @@
 *.png
 *.jar
 *.idea
+.vscode/*
 *.properties
 *.bat
-.gradle/*
+.gradle/
 /local.properties
 /.idea/caches
 /.idea/libraries
