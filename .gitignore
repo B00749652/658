@@ -1,5 +1,6 @@
 *.iml
 *.pro
+*.bin
 *.png
 *.jar
 *.idea

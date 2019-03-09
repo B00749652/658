@@ -12,10 +12,12 @@ import java.security.NoSuchAlgorithmException;
 import ie.uls.a658.AdminActivity;
 import ie.uls.a658.preferences.MetaCogActivity;
 import ie.uls.a658.R;
+import ie.uls.a658.preferences.Score;
 
 public class LoginActivity extends AppCompatActivity {
     private static int numAttempts = 3;
     private static DAO dao;
+    private Score score = Score.getScore();
 
 
     @Override
@@ -55,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         String username = mEditText.getText().toString();
         EditText mEditText2 = findViewById((R.id.EditPasswordL));
         String password = mEditText2.getText().toString();
+        score.setUserName(username);
         int nextViewNumber = 4;
         if(username.equals("") || password.equals("")){
             Toast.makeText(LoginActivity.this, "Forgotten Password? ", Toast.LENGTH_LONG).show();

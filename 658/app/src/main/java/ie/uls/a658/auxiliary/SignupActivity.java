@@ -16,9 +16,11 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.security.NoSuchAlgorithmException;
 
 import ie.uls.a658.R;
+import ie.uls.a658.preferences.Score;
 
 
 public class SignupActivity extends AppCompatActivity {
@@ -26,7 +28,8 @@ public class SignupActivity extends AppCompatActivity {
     private static String fullname, username, password;
     private boolean isAdmin = false;
     static final int PHOTO = 1;
-    private static File image;
+    private File image;
+    private Score score = Score.getScore();
     private static DAO dao;
 
 
@@ -37,7 +40,7 @@ public class SignupActivity extends AppCompatActivity {
         // Passing Intent Data on Return from Camera App
         // Processed and Image Button Background Updated
         //
-        FileOutputStream out;
+
         if((requestCode == PHOTO) && (resultCode == RESULT_OK)){
             Bitmap picture = (Bitmap) data.getExtras().get("data");
             ImageButton imButton = findViewById(R.id.Userimage);
@@ -45,7 +48,11 @@ public class SignupActivity extends AppCompatActivity {
             if(username == null){username = "example";}
             try{
                 File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                image = File.createTempFile(username,".png",file);
+                this.image = new File(file.toString(),username+".png");
+                OutputStream out = new FileOutputStream(image);
+                picture.compress(Bitmap.CompressFormat.PNG,100,out);
+                out.flush();
+                out.close();
             }
             catch(NullPointerException ex){ex.printStackTrace();}
             catch(IOException ex){ex.printStackTrace();}
@@ -88,17 +95,24 @@ public class SignupActivity extends AppCompatActivity {
         username = mEditText.getText().toString();
         mEditText = findViewById(R.id.EditPassword);
         password = mEditText.getText().toString();
+        score.setUserName(username);
         boolean isAdminUser = false;
+        dao = new DAO(this.getBaseContext(),"ContentDeliverySystem.db",null,1);
+
         if(isAdmin) {
             CheckBox checkBox = findViewById(R.id.isAdminchk);
             isAdminUser = (checkBox.isChecked());
-        }
-        dao = new DAO(this.getBaseContext(),"ContentDeliverySystem.db",null,1);
-
-        if(image != null) {
-            dao.insertNewUser(fullname, username, password, isAdminUser, image.getAbsolutePath());
+            if (this.image != null) {
+                dao.insertNewUser(fullname, username, password, isAdminUser, this.image.getAbsolutePath());
+            } else {
+                dao.insertNewUser(fullname, username, password, isAdminUser, null);
+            }
         }else{
-            dao.insertNewUser(fullname, username, password, isAdminUser, null);
+            if (this.image != null) {
+                dao.insertNewUser(fullname, username, password, false, this.image.getAbsolutePath());
+            } else {
+                dao.insertNewUser(fullname, username, password, false, null);
+            }
         }
         Intent returnHome = new Intent(this,LoginActivity.class);
         startActivity(returnHome);

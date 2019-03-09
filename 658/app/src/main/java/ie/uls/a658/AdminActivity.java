@@ -129,8 +129,8 @@ public class AdminActivity extends AppCompatActivity {
 
 
         String line1 = String.format("Total Registered Users :\t%s\n",num);
-        String line2 = String.format("Total Administrator Users :\t%s\n",num1);
-        String line3 = String.format("Total Ordinary Users :\t%s\n",num2);
+        String line2 = String.format("Total Administrator Users :\t%s\n",num2);
+        String line3 = String.format("Total Ordinary Users :\t%s\n",num1);
         String line4 = String.format("Total Tables in Database :\t%s\n",num3);
         sb.append(line1);
         sb.append(line2);

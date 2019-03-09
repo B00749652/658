@@ -12,16 +12,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import ie.uls.a658.MessagingActivity;
 import ie.uls.a658.R;
-import ie.uls.a658.RatingsActivity;
 
 
 public class MetaCogActivity extends AppCompatActivity {
-    private List<String> textattrib = new ArrayList<>();
+    private List<AttributeText> textattrib = new ArrayList<>();
     private Set<Integer> indices = new HashSet<>();
     TextView attribute1, attribute2, attribute3, attribute4, attribute5, attribute6, attribute7, attribute8;
 
@@ -41,20 +39,19 @@ public class MetaCogActivity extends AppCompatActivity {
 
 
         /* Attribute Text Source to be finalised*/
-
-        Collections.addAll(textattrib,"help others","digs in","goes out","has a dog","monopoliser","aloner","45's player","scrounger","athlete","rounded");
+        textattrib = Score.getAttributes();
         Collections.shuffle(textattrib);
 
 
         Iterator<Integer> it = indices.iterator();
-        attribute1.setText(textattrib.get(0));
-        attribute2.setText(textattrib.get(1));
-        attribute3.setText(textattrib.get(2));
-        attribute4.setText(textattrib.get(3));
-        attribute5.setText(textattrib.get(4));
-        attribute6.setText(textattrib.get(5));
-        attribute7.setText(textattrib.get(6));
-        attribute8.setText(textattrib.get(7));
+        attribute1.setText(textattrib.get(0).getText());
+        attribute2.setText(textattrib.get(1).getText());
+        attribute3.setText(textattrib.get(2).getText());
+        attribute4.setText(textattrib.get(3).getText());
+        attribute5.setText(textattrib.get(4).getText());
+        attribute6.setText(textattrib.get(5).getText());
+        attribute7.setText(textattrib.get(6).getText());
+        attribute8.setText(textattrib.get(7).getText());
 
 
         attribute1.setOnTouchListener(new RefTouchListener());

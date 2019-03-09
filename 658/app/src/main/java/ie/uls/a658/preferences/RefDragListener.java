@@ -15,10 +15,10 @@ import ie.uls.a658.R;
 public class RefDragListener implements View.OnDragListener {
     private static int cardcounter1 =0, cardcounter2 =0,cardcounter3=0,cardcounter4=0;
     private static Score score  = Score.getScore();
-    private static List<String> card1content = new ArrayList<>();
-    private static List<String> card2content = new ArrayList<>();
-    private static List<String> card3content = new ArrayList<>();
-    private static List<String> card4content = new ArrayList<>();
+//    private static List<String> card1content = new ArrayList<>();
+//    private static List<String> card2content = new ArrayList<>();
+//    private static List<String> card3content = new ArrayList<>();
+//    private static List<String> card4content = new ArrayList<>();
 
 
     @Override
@@ -46,22 +46,22 @@ public class RefDragListener implements View.OnDragListener {
                         case R.id.card1txt:
                             if(cardcounter1 > 3){return false;}
                             cardcounter1++;
-                            score.setCardcounter1(1);
+                            score.setCardcounter1(dropped.getText().toString());
                             break;
                         case R.id.card2txt:
                             if(cardcounter2 > 3){return false;}
                             cardcounter2++;
-                            score.setCardcounter2(1);
+                            score.setCardcounter2(dropped.getText().toString());
                             break;
                         case R.id.card3txt:
                             if(cardcounter3 > 3){return false;}
                             cardcounter3++;
-                            score.setCardcounter3(1);
+                            score.setCardcounter3(dropped.getText().toString());
                             break;
                         case R.id.card4txt:
                             if(cardcounter4 > 3){return false;}
                             cardcounter4++;
-                            score.setCardcounter4(1);
+                            score.setCardcounter4(dropped.getText().toString());
                             break;
                     }
 
@@ -79,22 +79,22 @@ public class RefDragListener implements View.OnDragListener {
                     String oldStuff = txt.getText().toString();
                     txt.setText(oldStuff + "\n - " + stuff);
 
-                    switch (oldStuff.charAt(0)) {
-                        case 'L':
-                            card1content.add(stuff);
-                            break;
-                        case 'W':
-                            card2content.add(stuff);
-                            break;
-                        case 'A':
-                            card3content.add(stuff);
-                            break;
-                        case 'N':
-                            card4content.add(stuff);
-                            break;
-                        default:
-                            break;
-                    }
+//                    switch (oldStuff.charAt(0)) {
+//                        case 'L':
+//                            card1content.add(stuff);
+//                            break;
+//                        case 'W':
+//                            card2content.add(stuff);
+//                            break;
+//                        case 'A':
+//                            card3content.add(stuff);
+//                            break;
+//                        case 'N':
+//                            card4content.add(stuff);
+//                            break;
+//                        default:
+//                            break;
+//                    }
 
                     return true;
                 } else {

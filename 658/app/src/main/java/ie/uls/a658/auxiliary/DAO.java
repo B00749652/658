@@ -1,13 +1,20 @@
 package ie.uls.a658.auxiliary;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.security.NoSuchAlgorithmException;
+
+import ie.uls.a658.R;
 
 
 /**
@@ -17,13 +24,13 @@ import java.security.NoSuchAlgorithmException;
 public class DAO extends SQLiteOpenHelper {
     private static SQLiteDatabase db;
     private static DAO dao;
-    private static Context context;
+    private static Context contxt;
     private static final String DATABASE_NAME = "ContentDeliverySystem.db";
     private static final String CONTENT_TABLE_NAME = "Content";
     private static final String CONTENT_COL_ID = "contentID";
     private static final String CONTENT_COL_DOMAIN = "domain";
     private static final String CONTENT_COL_CONTENT = "content";
-    private static final String ATTRIBUTES_COL_ID = "preferenceID";
+    private static final String ATTRIBUTES_COL_ID = "userID";
     private static final String ATTRIBUTES_COL_COG = "cognition";
     private static final String ATTRIBUTES_COL_COM = "company";
     private static final String ATTRIBUTES_COL_SEX = "sex";
@@ -38,6 +45,7 @@ public class DAO extends SQLiteOpenHelper {
     private static final String DOMAIN_COL_ID = "domainID";
     private static final String DOMAIN_COL_MSG = "domain";
     private static final String DOMAIN_COL_GREETING = "greeting";
+    private static final String DOMAIN_COL_FAREWELL = "farewell";
     private static final String SECURITY_TABLE_NAME = "Security";
     private static final String SECURITY_ID = "userID";
     private static final String SECURITY_PASSWORD = "passphrase";
@@ -49,8 +57,8 @@ public class DAO extends SQLiteOpenHelper {
 
     public DAO(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME,null,1);
+        contxt = context;
     }
-
 
 
     @Override
@@ -61,7 +69,7 @@ public class DAO extends SQLiteOpenHelper {
                 ATTRIBUTES_COL_COM,ATTRIBUTES_COL_MOB,ATTRIBUTES_COL_COG);
         db.execSQL(table1);
         table2 = String.format("CREATE TABLE IF NOT EXISTS %s ( %s INTEGER PRIMARY KEY," +
-                        "%s TEXT , %s TEXT);",DOMAIN_TABLE_NAME,DOMAIN_COL_ID,DOMAIN_COL_MSG, DOMAIN_COL_GREETING);
+                        "%s TEXT , %s TEXT , %s TEXT);",DOMAIN_TABLE_NAME,DOMAIN_COL_ID,DOMAIN_COL_MSG, DOMAIN_COL_GREETING, DOMAIN_COL_FAREWELL);
         db.execSQL(table2);
         table3 = String.format("CREATE TABLE IF NOT EXISTS %s ( %s INTEGER," +
                 "%s INTEGER , %s INTEGER, %s TEXT);",PHYSICAL_TABLE_NAME,PHYSICAL_COL_AMB,PHYSICAL_COL_LIGHT,PHYSICAL_COL_TEMP,PHYSICAL_COL_DOM);
@@ -83,6 +91,17 @@ public class DAO extends SQLiteOpenHelper {
                 SECURITY_TABLE_NAME,SECURITY_FULLNAME,SECURITY_ID,SECURITY_PASSWORD,SECURITY_ADMIN,
                 ADMIN_NAME,ADMIN_NAME,AUTH_CIPHER,ADMIN_PERMISSION);
         db.execSQL(DQL);
+        // Insert Data
+        InputStream dataIn = contxt.getResources().openRawResource(R.raw.domain);
+        BufferedReader br = new BufferedReader(new InputStreamReader(dataIn));
+        String line; StringBuilder sb = new StringBuilder(100000);
+        try {
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append(" ");
+            }
+        }catch(IOException e){e.printStackTrace();}
+        String query = sb.toString();
+        db.execSQL(query);
     }
 
 
@@ -112,23 +131,18 @@ public class DAO extends SQLiteOpenHelper {
         // Any SQL Query
         // Select Operation
         // Returns a Database Cursor
-        db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(querySQL,null);
         return cursor;
     }//General getMessages Method
-
-
-    private void insertData(){
-        /*To be Written*/
-    }
 
 
     public void insertNewUser(String fullname, String username, String password, boolean admin,@Nullable String photo) throws NoSuchAlgorithmException {
         // Insert New User into Database
         // Photo Optional stored locally, encrypted password
         // with all other tuple attributes
+        db = null;
         db = getWritableDatabase();
-        AppCrypto crypt = new AppCrypto(context);
+        AppCrypto crypt = new AppCrypto(contxt);
         String cipherText = crypt.createCrypto(password);
 
         if(photo!= null) {
