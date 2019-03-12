@@ -45,6 +45,7 @@ public class Score {
 
     /*Getters and Setters*/
     public String getDomain(){return this.domain;}
+    public void setDomain(String domain){this.domain = domain;}
     public String getUserName(){return this.userName;}
     public void setUserName(String name){this.userName = name;}
     public String getSocialScore() {

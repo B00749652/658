@@ -32,12 +32,12 @@ import java.util.StringTokenizer;
 import ie.uls.a658.preferences.Score;
 
 public class MessagingActivity extends AppCompatActivity {
-    private int ladderRung = 1;
+    private static int ladderRung = 1;
     private Context context;
     private Score score = Score.getScore();
     private static JSONObject webResponse = new JSONObject();
     private String inputText;
-    private String domain;
+    private String reply;
     private ConversationFlows conversation;
 
     @Override
@@ -46,7 +46,12 @@ public class MessagingActivity extends AppCompatActivity {
         this.context = getApplicationContext();
         setContentView(R.layout.activity_messaging);
         conversation = new ConversationFlows(this.context);
-        this.domain = score.getDomain();
+
+        /* To be replaced with API Call
+        to establish ontological domain*/
+        //score.setDomain(getAPIDomainSelection(score.getMoodScore(),score.getSocialScore))
+        score.setDomain("Alternative");
+
         LinearLayout linearLayout = findViewById(R.id.preamble);
         LinearLayout horizLayout = conversation.getHeader(context);
 
@@ -69,6 +74,7 @@ public class MessagingActivity extends AppCompatActivity {
             inputText = sampleText;
         }
             sendRequest(inputText);
+            editinput.setText("");
     }//onClick Text Method
 
 
@@ -94,7 +100,6 @@ public class MessagingActivity extends AppCompatActivity {
             while(stringTokenizer2.hasMoreTokens()){
                 verbs.add(stringTokenizer2.nextToken());
             }
-
 
         }catch(JSONException je){je.printStackTrace();}
 
@@ -154,7 +159,7 @@ public class MessagingActivity extends AppCompatActivity {
         escapedText = escapedText.replace("?","%3F");
         escapedText = escapedText.replace("!","%21");
 
-
+        /* Volley Request & Response */
         String msg = ADDRESS + "msg=" + escapedText;
         JsonObjectRequest jRequest = new JsonObjectRequest(Request.Method.POST,msg ,null, response -> {
            webResponse = response;
@@ -182,54 +187,57 @@ public class MessagingActivity extends AppCompatActivity {
 
         TextView replytextView = new TextView(context);
         replytextView.setPadding(10,10,10,10);
-        String reply = "?";
 
-        if(!(this.domain.equals(score.getDomain()))){
-            ladderRung = 2;
-            this.domain = score.getDomain();
+
+//        if(!(this.domain.equals(score.getDomain()))){
+//            ladderRung = 2;
+//            score.setDomain(this.domain);
+//        }
+        synchronized (new Thread()) {
+            switch (ladderRung) {
+                case 1:
+                    new Thread(() -> reply = conversation.getLevelOne(score.getDomain())).start();
+                    try{Thread.sleep(200);}catch(InterruptedException e){e.printStackTrace();}
+                    break;
+                case 2:
+                    new Thread(() -> reply = conversation.getLevelTwo(score.getDomain())).start();
+                    try{Thread.sleep(200);}catch(InterruptedException e){e.printStackTrace();}
+                    break;
+                case 3:
+                    new Thread(() -> reply = conversation.getLevelThree(score.getDomain())).start();
+                    try{Thread.sleep(200);}catch(InterruptedException e){e.printStackTrace();}
+                    break;
+                case 4:
+                    new Thread(() -> reply = conversation.getLevelFour(score.getDomain())).start();
+                    try{Thread.sleep(200);}catch(InterruptedException e){e.printStackTrace();}
+                    break;
+                case 5:
+                    new Thread(() -> reply = conversation.getLevelFive(score.getDomain())).start();
+                    try{Thread.sleep(200);}catch(InterruptedException e){e.printStackTrace();}
+                    break;
+                case 6:
+                    new Thread(() -> reply = conversation.getLevelSix(score.getDomain())).start();
+                    try{Thread.sleep(200);}catch(InterruptedException e){e.printStackTrace();}
+                    break;
+                case 7:
+                    new Thread(() -> reply = conversation.getLevelSeven(score.getDomain())).start();
+                    try{Thread.sleep(200);}catch(InterruptedException e){e.printStackTrace();}
+                    break;
+                case 8:
+                    new Thread(() -> reply = conversation.getLevelEight(score.getDomain())).start();
+                    try{Thread.sleep(200);}catch(InterruptedException e){e.printStackTrace();}
+                    break;
+                default:
+                    new Thread(() -> reply = conversation.getLevelOne(score.getDomain())).start();
+                    try{Thread.sleep(200);}catch(InterruptedException e){e.printStackTrace();}
+                    ladderRung = 1;
+                    break;
+            }
+            replytextView.setText(reply);
+            horizreplylayout.addView(rating);
+            horizreplylayout.addView(replytextView);
+            ladderRung++;
         }
-        switch(ladderRung){
-            case 1:
-                reply = conversation.getLevel1(score.getDomain());
-                ladderRung++;
-                break;
-            case 2:
-                reply = conversation.getLevel2(score.getDomain());
-                ladderRung++;
-                break;
-            case 3:
-                reply = conversation.getLevel3(score.getDomain());
-                ladderRung++;
-                break;
-            case 4:
-                reply = conversation.getLevel4(score.getDomain());
-                ladderRung++;
-                break;
-            case 5:
-                reply = conversation.getLevel5(score.getDomain());
-                ladderRung++;
-                break;
-            case 6:
-                reply = conversation.getLevel6(score.getDomain());
-                ladderRung++;
-                break;
-            case 7:
-                reply = conversation.getLevel7(score.getDomain());
-                ladderRung++;
-                break;
-            case 8:
-                reply = conversation.getLevel8(score.getDomain());
-                ladderRung++;
-                break;
-            case 9:
-                ladderRung = 0;
-                finish();
-        }
-        replytextView.setText(reply);
-
-        horizreplylayout.addView(rating);
-        horizreplylayout.addView(replytextView);
-
         return horizreplylayout;
     }
 

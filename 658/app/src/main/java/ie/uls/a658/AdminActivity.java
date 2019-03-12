@@ -1,7 +1,7 @@
 package ie.uls.a658;
 
+import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,20 +13,22 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 
-import ie.uls.a658.auxiliary.DAO;
-import ie.uls.a658.auxiliary.LoginActivity;
-import ie.uls.a658.auxiliary.SignupActivity;
+import ie.uls.a658.auxiliaryObjects.ContentDeliverySystem;
+import ie.uls.a658.auxiliaryObjects.DatabaseAccessObject;
+import ie.uls.a658.auxiliaryObjects.ManagementData;
 
 public class AdminActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
+    Context contxt;
+    DatabaseAccessObject dao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
+        this.contxt = getApplicationContext();
         String content = initializedata();
         TextView statview = findViewById(R.id.adminstatview);
         statview.setText(content);
@@ -84,59 +86,28 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     private String initializedata(){
-        DAO dao = new DAO(this.getBaseContext(),"ContentDeliverySystem.db",null,1);
         String content = "";
         StringBuilder sb = new StringBuilder(1000);
-
-        String managed = "SELECT Count(*) AS A, "+
-                " SUM(CASE WHEN admin = 'false' THEN 1 END) AS B, " +
-                " SUM(CASE WHEN admin = 'true' THEN 1 END) AS C " +
-                " FROM Security; ";
+        dao = ContentDeliverySystem.getInstance(contxt).dao();
         //String numUsers = "SELECT COUNT(*) AS total FROM Security;";
-        Cursor cursor = dao.getMessages(managed);
-        String num ="",num1= "",num2 = "";
-        if(cursor != null) {
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-            num = cursor.getString(cursor.getColumnIndex("A"));
-            num1 = cursor.getString(cursor.getColumnIndex("B"));
-            num2 = cursor.getString(cursor.getColumnIndex("C"));
-            cursor.move(1);
-            }
-        }
-        cursor.close();
+        new Thread(()-> {
+            ManagementData managementData = dao.getManagementData();
+            String num = "", num1 = "", num2 = "";
+            num = String.format(Locale.ENGLISH, "%d", managementData.getC());
+            num1 = String.format(Locale.ENGLISH, "%d", managementData.getA());
+            num2 = String.format(Locale.ENGLISH, "%d", managementData.getB());
 
+            String num3 = String.format(Locale.ENGLISH, "%d", dao.getTableCount());
 
-        String numTables = "SELECT name , COUNT(*) AS total FROM sqlite_master WHERE type = 'table';";
-        Cursor cursor1 = dao.getMessages(numTables);
-        String num3 = "";
-        List<String> entities = new ArrayList<>();
-        List<String> sqlit = new ArrayList<>();
-        if(cursor1 != null) {
-            cursor1.moveToFirst();
-            while (!cursor1.isAfterLast()) {
-                num3 = ((cursor1.getString(cursor1.getColumnIndex("total"))) == null) ? num3 : (cursor1.getString(cursor1.getColumnIndex("total")));
-                cursor1.move(1);
-            }
-            cursor1.moveToFirst();
-            while (!cursor1.isAfterLast()) {
-                String namedentity = cursor1.getString(cursor1.getColumnIndex("name"));
-                entities.add(namedentity);
-                cursor1.move(1);
-            }
-        }
-        cursor1.close();
-
-
-        String line1 = String.format("Total Registered Users :\t%s\n",num);
-        String line2 = String.format("Total Administrator Users :\t%s\n",num2);
-        String line3 = String.format("Total Ordinary Users :\t%s\n",num1);
-        String line4 = String.format("Total Tables in Database :\t%s\n",num3);
-        sb.append(line1);
-        sb.append(line2);
-        sb.append(line3);
-        sb.append(line4);
-        for(String line5: entities){sb.append(line5).append("\n");}
+            String line1 = String.format("Total Registered Users :\t%s\n", num);
+            String line2 = String.format("Total Administrator Users :\t%s\n", num2);
+            String line3 = String.format("Total Ordinary Users :\t%s\n", num1);
+            String line4 = String.format("Total Tables in Database :\t%s\n", num3);
+            sb.append(line1);
+            sb.append(line2);
+            sb.append(line3);
+            sb.append(line4);
+        }).start();
         content = sb.toString();
         return content;
     }

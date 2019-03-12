@@ -1,7 +1,6 @@
 package ie.uls.a658;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -10,69 +9,90 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import ie.uls.a658.auxiliary.DAO;
+import ie.uls.a658.auxiliaryObjects.Content;
+import ie.uls.a658.auxiliaryObjects.ContentDeliverySystem;
+import ie.uls.a658.auxiliaryObjects.ContentQuery;
+import ie.uls.a658.auxiliaryObjects.DatabaseAccessObject;
+import ie.uls.a658.auxiliaryObjects.Domain;
+import ie.uls.a658.auxiliaryObjects.DomainandCategory;
 import ie.uls.a658.preferences.Score;
 
-public class ConversationFlows {
+class ConversationFlows {
     // Mapping of User / Domain Model to Logic Layer
     // Structured as a 16 point conversation
     private Context context;
     private Score score = Score.getScore();
-    private String greeting, farewell;
-
+    private String greeting, farewell, cat = "That's nice ";
+    private DatabaseAccessObject dao;
     ConversationFlows(Context contxt){
         this.context = contxt;
     }
 
-    protected String getLevel1(String domain){
-        getFormalities(score.getDomain());
+    protected String getLevelOne(String domain){
+        getFormalities(domain);
         return greeting;
     }
 
-    protected String getLevel2(String domain){
-        String reply = String.format("Tiger, Tiger burning bright in the forests of the night");
-        return reply;
+    protected String getLevelTwo(String domain){
+              getContentText(2, domain);
+        return cat;
     }
 
-    protected String getLevel3(String domain){
-        String reply = String.format("Tiger, Tiger burning bright in the forests of the night");
-        return reply;
+    protected String getLevelThree(String domain){
+             getContentText(3,domain);
+        return cat;
     }
-    protected String getLevel4(String domain){
-        String reply = String.format("Tiger, Tiger burning bright in the forests of the night");
-        return reply;
+
+    protected String getLevelFour(String domain){
+            getContentText(4,domain );
+        return cat;
     }
-    protected String getLevel5(String domain){
-        String reply = String.format("Tiger, Tiger burning bright in the forests of the night");
-        return reply;
+
+    protected String getLevelFive(String domain){
+            getContentText(5,domain );
+        return cat;
     }
-    protected String getLevel6(String domain){
-        String reply = String.format("Tiger, Tiger burning bright in the forests of the night");
-        return reply;
+    protected String getLevelSix(String domain){
+
+            getContentText(6,domain );
+        return cat;
     }
-    protected String getLevel7(String domain){
-        String reply = String.format("Tiger, Tiger burning bright in the forests of the night");
-        return reply;
+
+    protected String getLevelSeven(String domain){
+            getContentText(7,domain );
+        return cat;
     }
-    protected String getLevel8(String domain){
-        return farewell;
+    protected String getLevelEight(String domain){
+        return this.farewell;
     }
 
 
-    private void getFormalities(String domain){
-        DAO dao = new DAO(context,"ContentDeliverySystem.db",null,1);
-        String formalquery = String.format("SELECT greeting, farewell FROM Domain WHERE domain = '%s'",domain);
-        Cursor cursor = dao.getMessages(formalquery);
-        if(cursor != null) {
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                this.greeting = cursor.getString(cursor.getColumnIndex("greeting"));
-                this.farewell = cursor.getString(cursor.getColumnIndex("farewell"));
-                cursor.move(1);
-            }
+
+    private void getContentText(int level, String choice){
+       List<String> relevantContent = null;
+       dao = ContentDeliverySystem.getInstance(context).dao();
+       List<String> answer  = dao.getAll(choice,level);
+       relevantContent = answer.isEmpty() ? null : dao.getContent(answer.get(0));
+       StringBuilder sb = new StringBuilder(100);
+        if(relevantContent != null && relevantContent.size() != 0) {
+            int random = (int) (Math.random() * relevantContent.size());
+            this.cat = relevantContent.get(random);
+        }else{
+            this.cat = "That's Nice";
+            /* Or take in an API Call Response Here*/
         }
-        cursor.close();
+    }
+
+
+    private void getFormalities(String domain) {
+        dao = ContentDeliverySystem.getInstance(context).dao();
+        Domain dom = dao.getFormalities(1)[0];
+        this.greeting = dom.getGreeting();
+        this.farewell = dom.getFarewell();
     }
 
 
@@ -129,7 +149,7 @@ public class ConversationFlows {
                 moodText = "-Indifferent, and very polite to strangers";
                 break;
             case "Happy":
-                moodText = "-Happy, counting your years by your smiles";
+                moodText = "-Happy, counting the years by your smiles";
                 break;
         }
 

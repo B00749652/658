@@ -1,31 +1,35 @@
-package ie.uls.a658.auxiliary;
+package ie.uls.a658;
 
 import android.content.Context;
-import android.database.Cursor;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import ie.uls.a658.auxiliaryObjects.ContentDeliverySystem;
+import ie.uls.a658.auxiliaryObjects.DatabaseAccessObject;
+import ie.uls.a658.auxiliaryObjects.Security;
+
 
 public class AppCrypto {
     public static Context context;
-
+    private DatabaseAccessObject dao;
+    int next;
     AppCrypto(Context context1){
         context =context1;
     }
 
 
-    public int onSecureLoginClick(String username, String password) throws NoSuchAlgorithmException{
+    synchronized int onSecureLoginClick(String username, String password) throws NoSuchAlgorithmException{
         // Security Management Method for
         // Checking Database Stored Credentials and deciding
         // which use-case story should be actuated
-        boolean[] result = checkCredentials(username, password);
-        int next = securityAction(result);
+            boolean[] result = checkCredentials(username, password);
+            this.next = securityAction(result);
         return next;
     }//onSecureLoginClick
 
 
-    protected String createCrypto(String passphrase) throws NoSuchAlgorithmException {
+    String createCrypto(String passphrase) throws NoSuchAlgorithmException {
         // Create a CryptoGram using
         // SHA-2, 256-bit algorithm and store
         // as a legible alphanumeric string
@@ -42,32 +46,29 @@ public class AppCrypto {
 
 
 
-    private boolean[] checkCredentials(String username, String password) throws NoSuchAlgorithmException{
+    private boolean[] checkCredentials(String username, String password) {
         // Consult DataBase for
         // UserName and Password and
         // AccessLevel Credentials
         boolean[] checkResult = new boolean[2];
-            DAO dao = new DAO(context, "ContentDeliverySystem.db",null,1);
-            String loginAttempt = createCrypto(password);
-            Cursor cursor = dao.getCreds(username);
-            if(cursor != null) {
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast()) {
-                    if (cursor.getString(cursor.getColumnIndex("userID")).equals(username)) {
+        dao = ContentDeliverySystem.getInstance(context).dao();
+        final Security suspect = dao.getCreds(username);
+         try {
+             String loginAttempt = createCrypto(password);
 
-                        if (Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex("admin")))) {
+            if(suspect != null) {
+                    if (suspect.getUserID().equals(username)) {
+
+                        if (Boolean.parseBoolean(suspect.getAdmin())) {
                             checkResult[1] = true;
                         }
-                        if (cursor.getString(cursor.getColumnIndex("passphrase")).equals(loginAttempt)) {
+                        if (suspect.getPassphrase().equals(loginAttempt)) {
                             checkResult[0] = true;
-                            return checkResult;
-                        } else {
-                            break;
                         }
                     }
-                    cursor.move(1);
                 }
-            }
+            }catch(NoSuchAlgorithmException ne){ne.printStackTrace();}
+
         return checkResult;
     }//checkCredentials Method
 

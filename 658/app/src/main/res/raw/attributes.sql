@@ -1,0 +1,1 @@
+'ROOT','TRUE','HAPPY','SOLO','MALE'

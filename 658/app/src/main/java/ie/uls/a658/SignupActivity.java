@@ -1,5 +1,6 @@
-package ie.uls.a658.auxiliary;
+package ie.uls.a658;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Environment;
@@ -11,7 +12,6 @@ import android.view.ViewStub;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.security.NoSuchAlgorithmException;
 
-import ie.uls.a658.R;
+import ie.uls.a658.auxiliaryObjects.ContentDeliverySystem;
+import ie.uls.a658.auxiliaryObjects.DatabaseAccessObject;
+import ie.uls.a658.auxiliaryObjects.Security;
 import ie.uls.a658.preferences.Score;
 
 
@@ -29,8 +31,9 @@ public class SignupActivity extends AppCompatActivity {
     private boolean isAdmin = false;
     static final int PHOTO = 1;
     private File image;
+    private Context contxt;
     private Score score = Score.getScore();
-    private static DAO dao;
+    private static DatabaseAccessObject dao;
 
 
 
@@ -40,7 +43,7 @@ public class SignupActivity extends AppCompatActivity {
         // Passing Intent Data on Return from Camera App
         // Processed and Image Button Background Updated
         //
-
+        contxt = getApplicationContext();
         if((requestCode == PHOTO) && (resultCode == RESULT_OK)){
             Bitmap picture = (Bitmap) data.getExtras().get("data");
             ImageButton imButton = findViewById(R.id.Userimage);
@@ -80,7 +83,7 @@ public class SignupActivity extends AppCompatActivity {
             ViewStub isAdminCheck = findViewById(R.id.signupAdmin);
             View inflatedView = isAdminCheck.inflate();
         }
-
+        dao = ContentDeliverySystem.getInstance(getApplicationContext()).dao();
     }//OnCreate Method
 
 
@@ -95,26 +98,32 @@ public class SignupActivity extends AppCompatActivity {
         username = mEditText.getText().toString();
         mEditText = findViewById(R.id.EditPassword);
         password = mEditText.getText().toString();
+        AppCrypto crypt = new AppCrypto(contxt);
+        String cipherText = crypt.createCrypto(password);
+
         score.setUserName(username);
-        boolean isAdminUser = false;
-        dao = new DAO(this.getBaseContext(),"ContentDeliverySystem.db",null,1);
+        boolean isAdminUser;
 
         if(isAdmin) {
             CheckBox checkBox = findViewById(R.id.isAdminchk);
             isAdminUser = (checkBox.isChecked());
-            if (this.image != null) {
-                dao.insertNewUser(fullname, username, password, isAdminUser, this.image.getAbsolutePath());
-            } else {
-                dao.insertNewUser(fullname, username, password, isAdminUser, null);
-            }
         }else{
-            if (this.image != null) {
-                dao.insertNewUser(fullname, username, password, false, this.image.getAbsolutePath());
-            } else {
-                dao.insertNewUser(fullname, username, password, false, null);
-            }
+            isAdminUser = false;
         }
-        Intent returnHome = new Intent(this,LoginActivity.class);
+                Security user = new Security();
+                user.setUserID(username);
+                user.setPassphrase(cipherText);
+                String admintext;
+                if(isAdminUser){admintext = "true";}else{admintext = "false";}
+                user.setAdmin(String.format("%s",admintext));
+                if(this.image != null) {
+                    user.setPhoto(this.image.getAbsolutePath());
+                }
+                user.setFullname(fullname);
+
+                new Thread(()-> dao.insertNewUser(user)).start();
+
+        Intent returnHome = new Intent(this, LoginActivity.class);
         startActivity(returnHome);
     }//OnRegisterClick Method
 
