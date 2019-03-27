@@ -12,6 +12,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
 import ie.uls.a658.auxiliaryObjects.Content;
 import ie.uls.a658.auxiliaryObjects.ContentDeliverySystem;
@@ -19,6 +21,7 @@ import ie.uls.a658.auxiliaryObjects.ContentQuery;
 import ie.uls.a658.auxiliaryObjects.DatabaseAccessObject;
 import ie.uls.a658.auxiliaryObjects.Domain;
 import ie.uls.a658.auxiliaryObjects.DomainandCategory;
+import ie.uls.a658.auxiliaryObjects.EateryDublin;
 import ie.uls.a658.preferences.Score;
 
 class ConversationFlows {
@@ -26,8 +29,11 @@ class ConversationFlows {
     // Structured as a 16 point conversation
     private Context context;
     private Score score = Score.getScore();
+    private double lat, lng;
     private String greeting, farewell, cat = "That's nice ";
     private DatabaseAccessObject dao;
+    String[] typeOfEstablishment = {"'Fast Food'","'Restaurant'","'Hotel'","'Bar'","'Coffee Shop'"};
+    private GPSInfoFinder gpsinfo = new GPSInfoFinder();
     ConversationFlows(Context contxt){
         this.context = contxt;
     }
@@ -70,22 +76,47 @@ class ConversationFlows {
         return this.farewell;
     }
 
+    protected void setLat(double lat){this.lat = lat;}
+    protected void setLng(double lng){this.lng = lng;}
+    protected double getLat(){return this.lat;}
+    protected double getLng(){return this.lng;}
 
+    private void getContentText(int level, String choice) {
+        List<String> relevantContent = null;
+        dao = ContentDeliverySystem.getInstance(context).dao();
+        List<String> answer = dao.getAll(choice, level);
+        relevantContent = answer.isEmpty() ? null : dao.getContent(answer.get(0));
 
-    private void getContentText(int level, String choice){
-       List<String> relevantContent = null;
-       dao = ContentDeliverySystem.getInstance(context).dao();
-       List<String> answer  = dao.getAll(choice,level);
-       relevantContent = answer.isEmpty() ? null : dao.getContent(answer.get(0));
-       StringBuilder sb = new StringBuilder(100);
-        if(relevantContent != null && relevantContent.size() != 0) {
+        if (relevantContent != null && relevantContent.size() != 0) {
             int random = (int) (Math.random() * relevantContent.size());
             this.cat = relevantContent.get(random);
-        }else{
-            this.cat = "That's Nice";
+        } else {
+            getNearbyPlacesInfo();
             /* Or take in an API Call Response Here*/
         }
     }
+
+    private void getNearbyPlacesInfo(){
+        // Method selects a random eatery type to
+        // query database with current GPS location identifying cluster
+        // returns a random entry on that matching list
+        int randomnum =  new Random().nextInt(typeOfEstablishment.length);
+        List<EateryDublin> result = dao.getEaterys(typeOfEstablishment[randomnum], gpsinfo.getNearestCluster(lat,lng));
+        int randomnum2 = new Random().nextInt(result.size());
+        String suffix;
+        if (result.size() != 0) {
+            if (typeOfEstablishment[randomnum].equalsIgnoreCase("'coffee shop'")) {
+                suffix = "\nWhy not have go in and have another cuppa? ";
+            } else {
+                suffix = "\nWhy not have bite to eat for some " + result.get(randomnum2).getType().toLowerCase() +" grub?";
+            }
+            this.cat = "Have you tried " + result.get(randomnum2).getEstablishment() +
+                    "\nIt is nearby at " + result.get(randomnum2).getAddress() + suffix;
+        } else {
+            this.cat = "That's nice ";
+        }
+    }
+
 
 
     private void getFormalities(String domain) {

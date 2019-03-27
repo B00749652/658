@@ -2,6 +2,9 @@ package ie.uls.a658;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -39,6 +42,9 @@ public class MessagingActivity extends AppCompatActivity {
     private String inputText;
     private String reply;
     private ConversationFlows conversation;
+    private LocationListener locationListener;
+    private LocationManager locationManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +60,43 @@ public class MessagingActivity extends AppCompatActivity {
 
         LinearLayout linearLayout = findViewById(R.id.preamble);
         LinearLayout horizLayout = conversation.getHeader(context);
-
         linearLayout.addView(horizLayout);
+        getGPS();
+        }//onCreate Method
 
-    }//onCreate Method
+
+
+    protected void getGPS(){
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                if(location != null) {
+                    conversation.setLat(location.getLatitude());
+                    conversation.setLng(location.getLongitude());
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        };
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);
+        }catch(SecurityException se){se.printStackTrace();}
+
+    }//GetGPS Method
 
 
 
@@ -200,10 +239,12 @@ public class MessagingActivity extends AppCompatActivity {
                     try{Thread.sleep(200);}catch(InterruptedException e){e.printStackTrace();}
                     break;
                 case 2:
+                    if(conversation.getLat() != 0){locationManager.removeUpdates(locationListener);}
                     new Thread(() -> reply = conversation.getLevelTwo(score.getDomain())).start();
                     try{Thread.sleep(200);}catch(InterruptedException e){e.printStackTrace();}
                     break;
                 case 3:
+                    if(conversation.getLat() != 0){locationManager.removeUpdates(locationListener);}
                     new Thread(() -> reply = conversation.getLevelThree(score.getDomain())).start();
                     try{Thread.sleep(200);}catch(InterruptedException e){e.printStackTrace();}
                     break;

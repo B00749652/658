@@ -22,6 +22,7 @@ import ie.uls.a658.auxiliaryObjects.ContentDeliverySystem;
 import ie.uls.a658.auxiliaryObjects.ContentQuery;
 import ie.uls.a658.auxiliaryObjects.DatabaseAccessObject;
 import ie.uls.a658.auxiliaryObjects.Domain;
+import ie.uls.a658.auxiliaryObjects.EateryDublin;
 import ie.uls.a658.auxiliaryObjects.Security;
 import ie.uls.a658.preferences.MetaCogActivity;
 import ie.uls.a658.preferences.Score;
@@ -38,6 +39,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         contxt = getApplicationContext();
+
+        /* TO DO INSERT EXPLICIT PERMISSIONS CHECKS
+        *  AND CLEAN UP LOGIN */
+
         dao = ContentDeliverySystem.getInstance(getApplicationContext()).dao();
         new Thread(() -> insertdata()).start();
         setContentView(R.layout.activity_login);
@@ -149,15 +154,29 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            List<EateryDublin> places = new ArrayList<>();
+            dataIn = contxt.getResources().openRawResource(R.raw.eateriesdublin);
+            br = new BufferedReader(new InputStreamReader(dataIn));
+            try {
+                while ((line = br.readLine()) != null) {
+                    EateryDublin justeat = new EateryDublin();
+                    String[] data = line.split(",");
+                    justeat.setNum(data[0]);
+                    justeat.setEstablishment(data[1]);
+                    justeat.setType(data[2]);
+                    justeat.setCluster(data[3]);
+                    justeat.setAddress(data[4]);
+                    places.add(justeat);
+                }
+            }catch(IOException ie){ie.printStackTrace();}
+
+            try{
+                dao.insertEatery(places);
+                br.close();
+            }catch(IOException ie){ie.printStackTrace();}
         }
 
     }
-
-
-
-
-
-
 
 
 

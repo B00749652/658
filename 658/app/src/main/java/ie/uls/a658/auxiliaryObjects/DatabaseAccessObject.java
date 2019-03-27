@@ -25,14 +25,17 @@ public interface DatabaseAccessObject {
     @Query("SELECT Count(*) AS A, SUM(CASE WHEN admin = 'false' THEN 1 END) AS B, SUM(CASE WHEN admin = 'true' THEN 1 END) AS C FROM Security")
     ManagementData getManagementData();
 
-    @Query("SELECT COUNT(*) AS total FROM sqlite_master WHERE type = 'table'")
-    int getTableCount();
+//    @Query("SELECT COUNT(*) AS total FROM sqlite_master WHERE type = 'table'")
+//    int getTableCount();
 
     @Query("SELECT * FROM Security WHERE userID = :user")
     Security getCreds(String user);
 
     @Query("SELECT COUNT(*) FROM Security")
     int getNumUsers();
+
+    @Query("SELECT * FROM EateryDublin WHERE type = :type AND cluster = :clusterid")
+    List<EateryDublin> getEaterys(String type, int clusterid);
 
     @Insert
     void insertNewUser(Security user);
@@ -48,6 +51,9 @@ public interface DatabaseAccessObject {
 
     @Insert
     void insertContent(List<Content> content);
+
+    @Insert
+    void insertEatery(List<EateryDublin> eateries);
 
 
 }

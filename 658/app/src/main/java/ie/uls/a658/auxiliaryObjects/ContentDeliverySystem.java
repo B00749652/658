@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {Content.class, ContentQuery.class, Domain.class, Security.class, Attributes.class}, version = 1, exportSchema = false)
+@Database(entities = {Content.class, ContentQuery.class, Domain.class, Security.class, Attributes.class, EateryDublin.class}, version = 1, exportSchema = false)
 public abstract class ContentDeliverySystem extends RoomDatabase {
 
     private static ContentDeliverySystem contentDeliverySystem;
