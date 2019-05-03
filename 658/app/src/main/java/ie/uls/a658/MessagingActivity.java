@@ -44,6 +44,8 @@ public class MessagingActivity extends AppCompatActivity {
     private ConversationFlows conversation;
     private LocationListener locationListener;
     private LocationManager locationManager;
+    private static int domainIndex = 0;
+    private String[] domains = {"Alternative","Competition","Compliment","Recurring","Sated","Unlimited","Urgent"};
 
 
     @Override
@@ -56,7 +58,7 @@ public class MessagingActivity extends AppCompatActivity {
         /* To be replaced with API Call
         to establish ontological domain*/
         //score.setDomain(getAPIDomainSelection(score.getMoodScore(),score.getSocialScore))
-        score.setDomain("Alternative");
+        score.setDomain(domains[domainIndex]);
 
         LinearLayout linearLayout = findViewById(R.id.preamble);
         LinearLayout horizLayout = conversation.getHeader(context);
@@ -222,7 +224,16 @@ public class MessagingActivity extends AppCompatActivity {
         rating.setScaleY(0.8f);
         rating.setScaleType(ImageView.ScaleType.CENTER_CROP);
         rating.setScaleType(ImageView.ScaleType.CENTER);
-        rating.setOnClickListener(response -> rating.setImageResource(R.drawable.smallbtnexp));
+        rating.setOnClickListener(response -> {
+            rating.setImageResource(R.drawable.smallbtnexp);
+            domainIndex++;
+            if(domainIndex < 6){score.setDomain(domains[domainIndex]);
+            ladderRung =1;
+            }else{domainIndex = 0;
+                score.setDomain(domains[0]);
+                ladderRung =1;
+            }
+        });
 
         TextView replytextView = new TextView(context);
         replytextView.setPadding(10,10,10,10);

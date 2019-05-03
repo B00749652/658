@@ -33,6 +33,7 @@ class ConversationFlows {
     private String greeting, farewell, cat = "That's nice ";
     private DatabaseAccessObject dao;
     String[] typeOfEstablishment = {"'Fast Food'","'Restaurant'","'Hotel'","'Bar'","'Coffee Shop'"};
+    private String[] domains = {"Alternative","Competition","Compliment","Recurring","Sated","Unlimited","Urgent"};
     private GPSInfoFinder gpsinfo = new GPSInfoFinder();
     ConversationFlows(Context contxt){
         this.context = contxt;
@@ -121,7 +122,13 @@ class ConversationFlows {
 
     private void getFormalities(String domain) {
         dao = ContentDeliverySystem.getInstance(context).dao();
-        Domain dom = dao.getFormalities(1)[0];
+        int choice = 0;
+        for(int pos = 0; pos < domains.length; pos++){
+            if(domains[pos].equalsIgnoreCase(domain)){
+                choice = pos;
+            }
+        }
+        Domain dom = dao.getFormalities((choice +1))[0];
         this.greeting = dom.getGreeting();
         this.farewell = dom.getFarewell();
     }

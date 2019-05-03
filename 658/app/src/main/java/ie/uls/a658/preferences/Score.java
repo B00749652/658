@@ -13,7 +13,7 @@ public class Score {
     private final String NEG = "Negative";
     private static Score score = new Score();
     private String userName = "example";
-    private String domain = "Alternative";
+    private String domain;
 
     public synchronized static Score getScore(){
         /* Singleton Constructor*/
